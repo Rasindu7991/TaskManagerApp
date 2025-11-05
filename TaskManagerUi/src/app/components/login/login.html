@@ -1,1 +1,59 @@
-<p>login works!</p>
+<div class="flex items-center justify-center min-h-screen bg-gray-50">
+  <div class="w-full max-w-lg p-10 space-y-6 bg-white rounded-xl shadow-2xl border border-gray-100 login-card">
+    
+    <div class="text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-indigo-600 mx-auto" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+      </svg>
+      <h2 class="mt-4 text-3xl font-extrabold text-gray-900 text-left">
+        Task Manager Login
+      </h2>
+      <p class="mt-2 text-sm text-gray-600">
+        Use: <strong>user</strong> | <strong>password</strong>
+      </p>
+    </div>
+
+    <!-- The form links to the reactive form group in the TS file -->
+    <form class="mt-8 space-y-6" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Username Field -->
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+        <input id="username" name="username" type="text" formControlName="username" required
+          class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          placeholder="Enter username">
+        
+        <!-- Validation Feedback -->
+        <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="text-red-500 text-xs mt-1">
+          Username is required (min 3 chars).
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+        <input id="password" name="password" type="password" formControlName="password" required
+          class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          placeholder="Enter password">
+          
+        <!-- Validation Feedback -->
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-red-500 text-xs mt-1">
+          Password is required (min 4 chars).
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage()" class="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg" role="alert">
+        {{ errorMessage() }}
+      </div>
+      
+      <!-- Submit Button -->
+      <div>
+        <button type="submit" [disabled]="loginForm.invalid"
+          class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition duration-150 ease-in-out">
+          Sign in
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

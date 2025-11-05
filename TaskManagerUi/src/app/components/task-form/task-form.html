@@ -1,0 +1,41 @@
+<div class="p-6 bg-white rounded-xl shadow-lg mb-6">
+  <!-- The form links to the reactive form group in the TS file -->
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="flex flex-col md:flex-row gap-4 items-center">
+    
+    <!-- Input Field -->
+    <div class="flex-grow w-full">
+      <input type="text" formControlName="taskName" placeholder="What needs to be done?"
+        class="form-control"
+        aria-label="Task title input">
+        
+      <!-- Validation Feedback -->
+      <div *ngIf="taskForm.get('taskName')?.invalid && taskForm.get('taskName')?.touched" class="text-red-500 text-sm mt-1">
+        A task name is required.
+      </div>
+    </div>
+
+    <div class="flex-grow w-full">
+      <input type="text" formControlName="description" placeholder="Desribe what need to done?"
+        class="form-control"
+        aria-label="Task title input">
+        
+      <!-- Validation Feedback -->
+      <div *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched" class="text-red-500 text-sm mt-1">
+        Description is required.
+      </div>
+    </div>
+    <!-- Submit Button -->
+    <div class="flex-shrink-0">
+      <button type="submit" [disabled]="taskForm.invalid" class="btn btn-primary">
+        {{ isEditMode() ? 'Save Changes' : 'Add Task' }}
+      </button>
+    </div>
+
+    <!-- Cancel Button (Only visible in Edit Mode) -->
+  <div *ngIf="isEditMode()" class="flex-shrink-0">
+    <button type="button" (click)="onCancelEdit()" class="btn btn-ghost">
+      Cancel
+    </button>
+  </div>
+  </form>
+</div>

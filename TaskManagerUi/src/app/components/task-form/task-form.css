@@ -1,0 +1,8 @@
+.task-form .form-input { width: 100%; }
+.task-form button { min-width: 120px; }
+.task-form { display: block; }
+
+/* Make form-control full width inside the component and add spacing */
+.task-form .form-control { width: 100%; margin-bottom: 0.5rem; }
+.task-form .btn { min-width: 110px; }
+

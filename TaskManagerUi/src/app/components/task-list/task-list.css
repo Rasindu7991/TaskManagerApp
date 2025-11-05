@@ -1,0 +1,102 @@
+.task-list {
+  display: block;
+  padding: 1rem;
+}
+
+.task-card {
+  display: block;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.task-card.completed {
+  border-left: 4px solid var(--success);
+  opacity: 0.8;
+}
+
+.task-card h4 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.task-card p {
+  margin: 0.5rem 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.task-card .line-through {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.task-card .md\:col-span-2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease-in-out;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  border: none;
+  cursor: pointer;
+  background: var(--button-bg);
+  color: var(--button-text);
+}
+
+.btn:hover {
+  background: var(--button-hover);
+}
+
+.btn-edit {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.btn-edit:hover {
+  background: var(--warning-hover);
+}
+
+.btn-delete {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.btn-delete:hover {
+  background: var(--danger-hover);
+}
+
+.btn-toggle {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.btn-toggle:hover {
+  background: var(--success-hover);
+}

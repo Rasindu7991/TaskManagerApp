@@ -11,7 +11,9 @@ const apiKey = authService.getApiKey();
 
 if(apiKey){
     const clonedReq = req.clone({
-        headers: req.headers.set('X-API-KEY', apiKey),
+        setHeaders: {
+            'X-API-KEY': apiKey
+        }
     });
     return next(clonedReq);
 }
