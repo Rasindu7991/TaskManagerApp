@@ -105,7 +105,9 @@ svg { fill: currentColor; }
   width: 100%;
   max-width: none;
   margin: 0;
+  padding: 0 1rem 1rem 1rem;
   position: relative; /* positioning context for top-right elements */
+  box-sizing: border-box;
 }
 
 /* Full-width top navbar */
