@@ -1,6 +1,6 @@
-<div class="p-6 bg-white rounded-xl shadow-lg mb-6">
+<div class="task-form p-6 bg-white rounded-xl shadow-lg mb-6">
   <!-- The form links to the reactive form group in the TS file -->
-  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="flex flex-col md:flex-row gap-4 items-center">
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="flex flex-col md:flex-row gap-4 items-stretch">
     
     <!-- Input Field -->
     <div class="flex-grow w-full">
@@ -24,18 +24,19 @@
         Description is required.
       </div>
     </div>
-    <!-- Submit Button -->
-    <div class="flex-shrink-0">
+    
+    <!-- Action Buttons in Same Row -->
+    <div class="flex gap-3 items-center">
       <button type="submit" [disabled]="taskForm.invalid" class="btn btn-primary">
-        {{ isEditMode() ? 'Save Changes' : 'Add Task' }}
+        <span *ngIf="isEditMode()" class="material-icons" aria-hidden="true">save</span>
+        <span *ngIf="!isEditMode()" class="material-icons" aria-hidden="true">add</span>
+        <span>{{ isEditMode() ? 'Save Changes' : 'Add Task' }}</span>
+      </button>
+      
+      <button *ngIf="isEditMode()" type="button" (click)="onCancelEdit()" class="btn btn-ghost">
+        <span class="material-icons" aria-hidden="true">close</span>
+        <span>Cancel</span>
       </button>
     </div>
-
-    <!-- Cancel Button (Only visible in Edit Mode) -->
-  <div *ngIf="isEditMode()" class="flex-shrink-0">
-    <button type="button" (click)="onCancelEdit()" class="btn btn-ghost">
-      Cancel
-    </button>
-  </div>
   </form>
 </div>

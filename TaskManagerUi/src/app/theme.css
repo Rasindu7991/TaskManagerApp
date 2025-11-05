@@ -8,6 +8,24 @@
   --border: rgba(111, 167, 235, 0.12);
 }
 
+/* Small spacing utilities (used where Tailwind utilities aren't present) */
+.space-y-6 > * + * { margin-top: 1.5rem !important; }
+.space-y-4 > * + * { margin-top: 1rem !important; }
+.space-y-2 > * + * { margin-top: 0.5rem !important; }
+
+/* Header top-right logout positioning */
+.header-top { position: relative; }
+.header-top .logout-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 20;
+}
+/* For very small screens keep the logout inline and visible */
+@media (max-width: 640px) {
+  .header-top .logout-button { position: static; margin-left: 0; display: block; }
+}
+
 /* Page background and global text */
 html, body, app-root, main {
   height: 100%;
@@ -69,8 +87,8 @@ input, textarea, select {
   border-color: rgba(111, 167, 235, 0.08) !important;
 }
 
-/* Links and interactive text */
-a, button {
+/* Links */
+a {
   color: var(--primary) !important;
 }
 
@@ -84,8 +102,34 @@ svg { fill: currentColor; }
 
 /* Utility: center the dashboard container with a max width */
 .app-shell {
-  max-width: 1100px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  position: relative; /* positioning context for top-right elements */
+}
+
+/* Full-width top navbar */
+.navbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+}
+.navbar .nav-brand {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Filters bar alignment */
+.filters-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 /* Login card tweaks */
@@ -113,27 +157,28 @@ svg { fill: currentColor; }
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.06s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+  white-space: nowrap;
 }
 
 .btn:active { transform: translateY(1px); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .btn-primary {
-  background: var(--primary);
-  color: #02243a;
+  background: var(--primary) !important;
+  color: #02243a !important;
   box-shadow: 0 4px 18px rgba(102,178,255,0.12);
 }
 .btn-primary:hover { filter: brightness(0.95); }
 
 .btn-ghost {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid rgba(255,255,255,0.04);
+  background: transparent !important;
+  color: var(--text) !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
 }
 
 .btn-danger {
-  background: #ff6b6b;
-  color: #071827;
+  background: #ff6b6b !important;
+  color: #071827 !important;
 }
 
 /* Inputs and form controls */
@@ -153,4 +198,98 @@ svg { fill: currentColor; }
 
 /* Small helper for card body spacing */
 .card-body { padding: 1rem; }
+/* Ensure form fields inside cards have spacing when utility classes are not present */
+.card-body > * + * { margin-top: 0.75rem; }
+
+/* Material icon tweaks */
+.material-icons {
+  font-family: 'Material Icons';
+  font-size: 1.15rem; /* ~18px */
+  line-height: 1;
+  vertical-align: middle;
+  display: inline-block;
+  user-select: none;
+}
+
+/* Icon placement inside buttons */
+.btn .material-icons { margin-right: 0.35rem; }
+.btn.icon-only .material-icons { margin-right: 0; }
+
+/* Make icon-only buttons slightly tighter */
+.btn.icon-only { padding: 0.45rem; min-width: 2.25rem; min-height: 2.25rem; }
+
+/* Logout button default (inside navbar or header) */
+.logout-button { position: static; }
+
+/* Task actions grouping (left side) */
+.task-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  /* Stack actions horizontally but slightly separated on small screens */
+  .task-actions { gap: 0.5rem; }
+}
+
+/* Tighten icon-only buttons inside the task list */
+.task-card .btn.icon-only {
+  padding: 0.45rem;
+  border-radius: 8px;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+}
+
+/* Message styling */
+.message-success {
+  padding: 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.message-error {
+  padding: 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+/* Modal styles */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1rem;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 640px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-body { padding: 1rem 1.25rem; }
+.modal-body > * + * { margin-top: 1rem; }
+.modal-body .form-control { margin-bottom: 0.75rem; }
 

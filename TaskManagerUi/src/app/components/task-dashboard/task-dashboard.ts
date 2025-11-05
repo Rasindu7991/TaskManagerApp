@@ -13,7 +13,7 @@ type TaskSort = 'date-desc' | 'date-asc' | 'title-asc';
   selector: 'app-task-dashboard',
   standalone: true,
   imports: [CommonModule, TaskList, TaskForm],
-  templateUrl: './dashboard.html',
+  templateUrl: './task-dashboard.html',
   styleUrls: ['./task-dashboard.css']
 })
 
@@ -28,6 +28,10 @@ taskToEdit = signal<TaskItem | null>(null);
 isLoading = signal<boolean>(false);
 message = signal<string | null>(null);
 messageType = signal<'success' | 'error' | null>(null);
+
+// Modal state
+isModalOpen = signal<boolean>(false);
+modalMode = signal<'add' | 'edit'>('add');
 
 currentFilter = signal<TaskFilter>('all');
 currentSort = signal<TaskSort>('date-desc');
@@ -87,7 +91,7 @@ ngOnInit(): void {
 
   handleTaskSubmitted(task: TaskItem): void {
     if (this.taskToEdit()) {
-      this.updateTask(task);
+      this.updateTaskFromForm(task);
     } else {
       this.createTask(task);
     }
@@ -101,23 +105,51 @@ ngOnInit(): void {
           this.messageType.set('success');
           this.message.set('Task created successfully.');
           setTimeout(() => { this.message.set(null); this.messageType.set(null); }, 3000);
+          // Close modal after create
+          this.closeModal();
         },
         error: (err) => console.error('Error creating task', err)
       });
     }
 
+    // Update task from form submission (edit modal)
+    updateTaskFromForm(task: TaskItem): void {
+      this.taskService.updateTask(task).subscribe({
+        next: (updatedTask) => {
+          // 💡 Update signal immutably: Find and replace the task in the array
+          // Use the original task if API returns null
+          const taskToUpdate = updatedTask || task;
+          this.allTasks.update(tasks => 
+            tasks.map(t => t.id === taskToUpdate.id ? taskToUpdate : t)
+          );
+          this.messageType.set('success');
+          this.message.set('Task updated successfully.');
+          setTimeout(() => { this.message.set(null); this.messageType.set(null); }, 3000);
+          // Close modal and clear edit state
+          this.closeModal();
+          this.clearEditState();
+        },
+        error: (err) => {
+          console.error('Error updating task', err);
+          this.messageType.set('error');
+          this.message.set('Failed to update task.');
+          setTimeout(() => { this.message.set(null); this.messageType.set(null); }, 3000);
+        }
+      });
+    }
     
+    // Update task (for toggle completion from list)
     updateTask(task: TaskItem): void {
     this.taskService.updateTask(task).subscribe({
       next: (updatedTask) => {
         // 💡 Update signal immutably: Find and replace the task in the array
+        // Use the original task if API returns null
+        const taskToUpdate = updatedTask || task;
         this.allTasks.update(tasks => 
-          tasks.map(t => t.id === updatedTask.id ? updatedTask : t)
+          tasks.map(t => t.id === taskToUpdate.id ? taskToUpdate : t)
         );
-        // If we were editing, clear the edit state and form
-        this.clearEditState();
         this.messageType.set('success');
-        this.message.set('Task updated successfully.');
+        this.message.set('Task status updated.');
         setTimeout(() => { this.message.set(null); this.messageType.set(null); }, 3000);
       },
       error: (err) => console.error('Error updating task', err)
@@ -142,11 +174,28 @@ ngOnInit(): void {
   }
 
   setTaskToEdit(task: TaskItem): void {
-      this.taskToEdit.set(task);
-    }
+      this.openEditModal(task);
+  }
 
   clearEditState(): void {
     this.taskToEdit.set(null);
+  }
+
+  // Modal helpers
+  openAddModal(): void {
+    this.clearEditState();
+    this.modalMode.set('add');
+    this.isModalOpen.set(true);
+  }
+
+  openEditModal(task: TaskItem): void {
+    this.taskToEdit.set(task);
+    this.modalMode.set('edit');
+    this.isModalOpen.set(true);
+  }
+
+  closeModal(): void {
+    this.isModalOpen.set(false);
   }
 
   updateFilter(event: Event): void {

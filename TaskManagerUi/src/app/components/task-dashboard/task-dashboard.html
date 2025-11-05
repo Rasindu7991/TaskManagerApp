@@ -1,120 +1,97 @@
-<div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8 app-shell">
-
-    <!-- Header and Controls -->
-    <header class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-6 rounded-xl shadow-lg">
-        <div class="mb-4 sm:mb-0">
-            <h1 class="text-3xl font-extrabold text-gray-900">Task Manager</h1>
-            <p class="text-sm text-gray-500 mt-1">
-                Welcome back! Total tasks: <span class="font-semibold text-indigo-600">{{ allTasks().length }}</span>
-            </p>
-        </div>
-
-        <!-- Controls -->
-        <div class="flex items-center space-x-3 w-full sm:w-auto">
-            <div class="flex space-x-2">
-                <select (change)="updateFilter($event)" class="form-select border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-2 text-sm">
-                    <option value="all">Show All</option>
-                    <option value="active">Active Only</option>
-                    <option value="completed">Completed Only</option>
-                </select>
-
-                <select (change)="updateSort($event)" class="form-select border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-2 text-sm">
-                    <option value="date-desc">Newest First</option>
-                    <option value="date-asc">Oldest First</option>
-                    <option value="title-asc">Title (A-Z)</option>
-                </select>
-            </div>
-
-            <button (click)="logout()" title="Logout"
-                    class="ml-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none transition duration-150">
-                Logout
-            </button>
-        </div>
-    </header>
-
-    <!-- Main area: two-column layout (form | list) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <!-- Left: Task Form -->
-        <div class="md:col-span-1 bg-white p-6 rounded-xl shadow-lg border-2 border-indigo-200 card-body">
-            <h2 class="text-2xl font-bold mb-4 text-indigo-700">{{ taskToEdit() ? 'Edit Task' : 'Add New Task' }}</h2>
-            <app-task-form [taskToEdit]="taskToEdit()" (taskSubmitted)="handleTaskSubmitted($event)" (cancelEdit)="clearEditState()"></app-task-form>
-        </div>
-
-        <!-- Right: Task List -->
-        <div class="md:col-span-2">
-            <!-- Loading State -->
-            <div *ngIf="isLoading()" class="text-center py-12 text-indigo-500 bg-white p-6 rounded-xl shadow-lg">
-                <svg class="animate-spin h-8 w-8 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <p class="mt-2 text-lg">Loading tasks...</p>
-            </div>
-
-            <div *ngIf="!isLoading()" class="bg-white p-6 rounded-xl shadow-lg">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold text-gray-800">Your Tasks ({{ filteredTasks().length }} of {{ allTasks().length }})</h2>
-                    <div class="flex items-center space-x-3">
-                        <select (change)="updateFilter($event)" class="form-control" style="width: 160px;">
-                            <option value="all">Show All</option>
-                            <option value="active">Active Only</option>
-                            <option value="completed">Completed Only</option>
-                        </select>
-                        <select (change)="updateSort($event)" class="form-control" style="width: 160px;">
-                            <option value="date-desc">Newest First</option>
-                            <option value="date-asc">Oldest First</option>
-                            <option value="title-asc">Title (A-Z)</option>
-                        </select>
-                    </div>
-                </div>
-                <!-- Transient message -->
-                <div *ngIf="message()" class="mt-4">
-                    <div [ngClass]="messageType() === 'success' ? 'p-3 bg-green-100 text-green-800 rounded' : 'p-3 bg-red-100 text-red-800 rounded'">
-                        {{ message() }}
-                    </div>
-                </div>
-
-                <app-task-list [tasks]="filteredTasks()" (taskToggleCompleted)="updateTask($event)" (taskEdit)="setTaskToEdit($event)" (taskDelete)="deleteTask($event)"></app-task-list>
-            </div>
-        </div>
+<div class="w-full app-shell">
+  <nav class="navbar">
+    <div class="nav-brand">Task Manager</div>
+    <button (click)="logout()" title="Logout" aria-label="Logout" class="logout-button btn btn-danger">
+      <span class="material-icons" aria-hidden="true">logout</span>
+      <span>Logout</span>
+    </button>
+  </nav>
+  <!-- Header and Controls -->
+  <header class="w-full mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 rounded-none shadow-lg card">
+    <div class="mb-4 sm:mb-0">
+      <h1 class="text-3xl font-extrabold header-title">Task Manager</h1>
+      <p class="text-sm mt-1 text-gray-400">
+        Welcome back! Total tasks: <span class="font-semibold text-blue-400">{{ allTasks().length }}</span>
+      </p>
     </div>
-        <svg class="animate-spin h-8 w-8 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+
+    <!-- Controls -->
+    <div class="flex items-center gap-4 w-full sm:w-auto">
+      <div class="filters-bar">
+        <select (change)="updateFilter($event)" class="form-select">
+          <option value="all">Show All</option>
+          <option value="active">Active Only</option>
+          <option value="completed">Completed Only</option>
+        </select>
+
+        <select (change)="updateSort($event)" class="form-select">
+          <option value="date-desc">Newest First</option>
+          <option value="date-asc">Oldest First</option>
+          <option value="title-asc">Title (A-Z)</option>
+        </select>
+      </div>
+     
+    </div>
+  </header>
+
+  <!-- Main area: two-column layout (form | list) -->
+  <div class="grid grid-cols-1 gap-6">
+    <!-- Task List Full Width -->
+    <div class="col-span-1">
+      <!-- Loading State -->
+      <div *ngIf="isLoading()" class="text-center py-12 card p-6">
+        <svg class="animate-spin h-10 w-10 mx-auto text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        <p class="mt-2 text-lg">Loading tasks...</p>
-    </div>
+        <p class="mt-4 text-lg text-blue-400">Loading tasks...</p>
+      </div>
 
-    <!-- Task List Controls and Display -->
-    <div *ngIf="!isLoading()" class="bg-white p-6 rounded-xl shadow-lg">
+      <!-- Task List with Controls -->
+      <div *ngIf="!isLoading()" class="card p-6">
         <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-            <h2 class="text-2xl font-bold text-gray-800">Your Tasks ({{ filteredTasks().length }} of {{ allTasks().length }})</h2>
-            
-            <!-- Filters and Sorting -->
-            <div class="flex space-x-4">
-                <!-- Filter Status -->
-                <select (change)="updateFilter($event)" class="form-select border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-2 text-sm">
-                    <option value="all">Show All</option>
-                    <option value="active">Active Only</option>
-                    <option value="completed">Completed Only</option>
-                </select>
+          <h2 class="text-2xl font-bold text-blue-400">Your Tasks ({{ filteredTasks().length }} of {{ allTasks().length }})</h2>
+        </div>
 
-                <!-- Sort By -->
-                <select (change)="updateSort($event)" class="form-select border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-2 text-sm">
-                    <option value="date-desc">Newest First</option>
-                    <option value="date-asc">Oldest First</option>
-                    <option value="title-asc">Title (A-Z)</option>
-                </select>
-            </div>
+        <button class="btn btn-secondary" (click)="openAddModal()">
+        <span class="material-icons" aria-hidden="true">add</span>
+        <span>Add Task</span>
+      </button>
+
+        <!-- Transient message -->
+        <div *ngIf="message()" class="mb-6">
+          <div [ngClass]="messageType() === 'success' ? 'message-success' : 'message-error'">
+            {{ message() }}
+          </div>
         </div>
 
         <!-- Task List Component -->
         <app-task-list 
-            [tasks]="filteredTasks()"
-            (taskToggleCompleted)="updateTask($event)"
-            (taskEdit)="setTaskToEdit($event)"
-            (taskDelete)="deleteTask($event)">
+          [tasks]="filteredTasks()"
+          (taskToggleCompleted)="updateTask($event)"
+          (taskEdit)="setTaskToEdit($event)"
+          (taskDelete)="deleteTask($event)">
         </app-task-list>
+      </div>
     </div>
+  </div>
 
+  <!-- Modal for Add/Edit Task -->
+  <div *ngIf="isModalOpen()" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="text-xl font-bold">{{ modalMode() === 'edit' ? 'Edit Task' : 'Add Task' }}</h3>
+        <button class="btn btn-ghost icon-only" (click)="closeModal()" aria-label="Close">
+          <span class="material-icons" aria-hidden="true">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-task-form 
+          [taskToEdit]="taskToEdit()"
+          (taskSubmitted)="handleTaskSubmitted($event)"
+          (cancelEdit)="closeModal()">
+        </app-task-form>
+      </div>
+    </div>
+  </div>
 </div>
